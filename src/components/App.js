@@ -2,18 +2,22 @@ import React, { Component } from "react";
 import ContactForm from "./contactForm/ContactForm";
 import ContactList from "./contactList/ContactList";
 import Filter from "./filter/Filter";
+import Alert from "./alert/Alert";
+import { CSSTransition } from "react-transition-group";
+import styles from './App.module.css'
 
 class App extends Component {
   state = {
     contacts: [
-      { id: "id-1", name: "Rosie Simpson", number: "459-12-56" },
-      { id: "id-2", name: "Hermione Kline", number: "443-89-12" },
-      { id: "id-3", name: "Eden Clements", number: "645-17-79" },
-      { id: "id-4", name: "Annie Copeland", number: "227-91-26" }
+      // { id: "id-1", name: "Rosie Simpson", number: "459-12-56" },
+      // { id: "id-2", name: "Hermione Kline", number: "443-89-12" },
+      // { id: "id-3", name: "Eden Clements", number: "645-17-79" },
+      // { id: "id-4", name: "Annie Copeland", number: "227-91-26" }
     ],
     filter: "",
     name: "",
     number: "",
+    alert: false,
   };
 
   componentDidMount() {
@@ -33,7 +37,15 @@ class App extends Component {
       ? this.setState(prevstate => ({
           contacts: [...prevstate.contacts, data]
         }))
-      : alert(`${data.name} is already in contact`);
+      // : alert(`${data.name} is already in contact`);
+      : this.setState({
+        alert: true
+      });
+      setTimeout(() => {
+        this.setState({
+          alert: false
+        });
+      }, 2500);
   };
 
   deleteContact = e => {
@@ -56,19 +68,29 @@ class App extends Component {
   };
 
   render() {
-    const {filter} = this.state;
+    const {filter, alert} = this.state;
     return (
-      <div>
-        <h1>Phonebook</h1>
+      <>
+      <Alert alert={alert}/>
+      <CSSTransition
+        in={true}
+        timeout={500}
+        classNames={styles}
+        appear={true}
+        unmountOnExit
+        >
+        <p className={styles.title}>Phonebook</p>
+      </CSSTransition>
+
         <ContactForm submitContact={this.submitContact} />
 
         <h2>Contacts</h2>
-        {this.state.contacts.length > 2 && <Filter getName={this.getName} value={filter} />}
+        {this.state.contacts.length > 1 && <Filter getName={this.getName} value={filter} />}
         <ContactList
           contacts={this.filterContacts()}
           deleteContact={this.deleteContact}
         />
-      </div>
+      </>
     );
   }
 }

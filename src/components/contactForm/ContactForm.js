@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 
 class ContactForm extends Component {
   state = {
-    name: "",
-    number: ""
+  name: "",
+  number: ""
   };
 
   handleSubmit = e => {
